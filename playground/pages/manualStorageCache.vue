@@ -15,7 +15,7 @@ interface Rating {
 }
 
 type MinimalProduct = Pick<Product, 'id' | 'title' | 'price'>
-const CACHE_KEY = '__memory_cache__/products'
+const CACHE_KEY = '__storage_cache__/products'
 const { data, status, error } = await useFetch<MinimalProduct[]>(
   'https://fakestoreapi.com/products',
   {
