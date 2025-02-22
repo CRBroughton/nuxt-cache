@@ -5,8 +5,8 @@ A flexible caching solution for Nuxt 3 that provides both in-memory and persiste
 
 ## Features
 
-- 🧠 `useMemoryCache`: Server-side in-memory caching with Nuxt's payload system
-- 💾 `useStorageCache`: Client-side persistent caching using localStorage
+- 🧠 `useMemoryCache`: In-memory caching with Nuxt's payload system
+- 💾 `useStorageCache`: Persistent caching using localStorage
 - ⚡️ Zero-config setup with sensible defaults
 - 🎯 Full TypeScript support
 - 🔄 Compatible with `useFetch`, `useLazyFetch`, and custom fetch composables
@@ -39,11 +39,13 @@ import { useMemoryCache } from 'nuxt-cache'
 
 // Basic usage
 const { data } = await useFetch('/api/products', {
+  // other useFetch options
   ...useMemoryCache({ duration: 3600000 }) // Cache for 1 hour
 })
 
 // With lazy loading
 const { data } = await useLazyFetch('/api/products', {
+  // other useFetch options
   ...useMemoryCache({ duration: 3600000 })
 })
 ```
