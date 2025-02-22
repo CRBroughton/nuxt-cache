@@ -2,11 +2,7 @@ import { useStorage } from '@vueuse/core'
 import type { CreateCacheOptions, CacheOptions, TransformInput } from '../types'
 import { useRoute, type NuxtApp } from '#app'
 
-/** Configuration options for cache behaviour */
-interface CreateStorageCacheOptions extends CreateCacheOptions {
-  /** Optional cache key, defaults to the current route */
-  key?: string
-}
+
 
 // Storage structure that keeps array data and metadata separate
 interface StorageData<T> {
@@ -64,6 +60,11 @@ export function createStorageCache<T>({
   return storage.value.data
 }
 
+/** Configuration options for cache behaviour */
+interface CreateStorageCacheOptions extends CreateCacheOptions {
+  /** Optional cache key, defaults to the current route */
+  key?: string
+}
 /**
  * Creates cache options with transform and getCachedData functions using VueUse's useStorage
  * @param cacheOptions - Configuration for cache behaviour including duration
