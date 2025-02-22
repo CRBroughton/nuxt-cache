@@ -30,7 +30,7 @@ export default defineNuxtConfig({
 
 ## Usage
 
-### Memory Cache (Server-Side)
+### Memory Cache
 
 Uses Nuxt's built-in payload system to cache data in memory. Ideal for server-side rendered data that doesn't need to persist.
 
@@ -48,7 +48,7 @@ const { data } = await useLazyFetch('/api/products', {
 })
 ```
 
-### Storage Cache (Client-Side)
+### Storage Cache
 
 Uses localStorage to persist cached data between page reloads. Perfect for client-side data that should survive browser refreshes.
 
@@ -90,7 +90,6 @@ const { data } = await useLazyFetch('/api/products', {
 
 ### Memory Cache
 - Uses Nuxt's payload system to store data in memory
-- Perfect for SSR and initial page loads
 - Data persists only for the current session
 - Automatically cleared on page refresh
 

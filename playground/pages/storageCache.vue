@@ -16,7 +16,7 @@ interface Rating {
 const { data, status, error } = await useFetch<Product[]>(
   'https://fakestoreapi.com/products',
   {
-    ...useStorageCache({ duration: 4000 }),
+    ...useStorageCache({ duration: 5000 }),
   },
 )
 </script>
