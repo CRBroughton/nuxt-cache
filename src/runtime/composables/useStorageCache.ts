@@ -2,8 +2,6 @@ import { useStorage } from '@vueuse/core'
 import type { CreateCacheOptions, CacheOptions, TransformInput } from '../types'
 import { useRoute, type NuxtApp } from '#app'
 
-
-
 // Storage structure that keeps array data and metadata separate
 interface StorageData<T> {
   data: T
@@ -13,8 +11,18 @@ interface StorageData<T> {
 /**
  * Creates a storage handler for caching data
  * @param storageKey - Storage key for cached data
- * @param data - Default data to use if no cached data exists
+ * @param data - Data to store in cache
  * @returns Storage ref and utility functions for managing cached data
+ * @example
+ * // useFetch transformc
+ * transform(input) {
+ *   const modifiedProducts = input.map(product => ({
+ *     id: product.id,
+ *     title: product.title,
+ *   }))
+ *   // Must be the same key used in createStorageCache
+ *   return createStorageHandler(CACHE_KEY, modifiedProducts).value.data
+ * }
  */
 export function createStorageHandler<T>(storageKey: string, data: T) {
   const storageData: StorageData<T> = {
@@ -32,18 +40,42 @@ export function createStorageHandler<T>(storageKey: string, data: T) {
 
 /**
  * Validates and retrieves data from storage cache
- * @param options - Options object containing storage and duration
- * @param options.storage - Storage ref containing cached data from createStorageHandler
- * @param options.duration - Cache duration in milliseconds
+ * @param options - Configuration options for cache validation
+ * @param options.key - Key to lookup data in Nuxt payload
+ * @param options.nuxtApp - Nuxt app instance
+ * @param options.storageKey - Storage key for cached data from createStorageHandler
+ * @param options.duration - Duration in milliseconds before cache expires
  * @returns Cached data if valid and not expired, undefined if cache miss or expired
+ * @example
+ * // useFetch transform
+ * getCachedData(key, nuxtApp) {
+ *   return createStorageCache({
+ *     key,
+ *     nuxtApp,
+ *     storageKey: CACHE_KEY, // Must be the same key used in createStorageHandler
+ *     duration: 10000,
+ *   })
+ * }
  */
 export function createStorageCache<T>({
-  storage,
+  key,
+  nuxtApp,
+  storageKey,
   duration,
 }: {
-  storage: ReturnType<typeof createStorageHandler<T>>
+  key: string
+  nuxtApp: NuxtApp
+  storageKey: string
   duration: number
 }) {
+  const app = nuxtApp.payload.data[key]
+  const storage = useStorage<StorageData<T>>(
+    storageKey,
+    {
+      data: app,
+      fetchedAt: new Date(),
+    },
+  )
   if (!storage.value) {
     return // refetch
   }
@@ -91,16 +123,12 @@ export function useStorageCache<T>(cacheOptions: CreateStorageCacheOptions = { d
     },
 
     getCachedData(key: string, nuxtApp: NuxtApp) {
-      const app = nuxtApp.payload.data[key]
-      const storage = useStorage<StorageData<T>>(
+      return createStorageCache({
+        key,
+        nuxtApp,
         storageKey,
-        {
-          data: app,
-          fetchedAt: new Date(),
-        },
-      )
-
-      return createStorageCache({ storage, duration: cacheOptions.duration })
+        duration: cacheOptions.duration,
+      })
     },
   }
 }
