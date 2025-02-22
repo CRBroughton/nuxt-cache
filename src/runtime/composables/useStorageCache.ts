@@ -4,8 +4,9 @@ import { useRoute, type NuxtApp } from '#app'
 
 /**
  * Creates a storage handler for caching data
- * @param storageKey - Storage key for cached data
- * @param data - Data to store in cache
+ * @param options - Configuration options for storage handler
+ * @param options.storageKey - Storage key for cached data
+ * @param options.data - Data to store in cache
  * @returns Storage ref and utility functions for managing cached data
  * @example
  * // useFetch transform
@@ -18,7 +19,13 @@ import { useRoute, type NuxtApp } from '#app'
  *   return createStorageHandler(CACHE_KEY, modifiedProducts).value.data
  * }
  */
-export function createStorageHandler<T>(storageKey: string, data: T) {
+export function createStorageHandler<T>({
+  storageKey,
+  data,
+}: {
+  storageKey: string
+  data: T
+}) {
   const storageData: StorageData<T> = {
     data,
     fetchedAt: new Date(),
@@ -113,7 +120,10 @@ export function useStorageCache<T>(cacheOptions: CreateStorageCacheOptions = { d
 
   return {
     transform(input: TransformInput<T>) {
-      return createStorageHandler(storageKey, input)
+      return createStorageHandler({
+        storageKey,
+        data: input,
+      })
     },
 
     getCachedData(key: string, nuxtApp: NuxtApp) {

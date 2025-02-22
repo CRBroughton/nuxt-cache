@@ -15,28 +15,39 @@ A flexible caching solution for Nuxt 3 that provides both in-memory and persiste
 ## Installation
 
 ```bash
-npm install nuxt-cache
+npm install @crbroughton/nuxt-cache
 ```
 
-1. Add  `nuxt-cache` to the `modules` section of your `nuxt.config.ts`:
+1. Add `@crbroughton/nuxt-cache` to the `modules` section of your `nuxt.config.ts`:
 
 ```ts
 export default defineNuxtConfig({
   modules: [
-    'nuxt-cache'
+    '@crbroughton/nuxt-cache'
   ],
 })
 ```
 
 ## Usage
 
+Both the memory and persistent variants of nuxt-cache come with two
+flavours of caching. The first is designed for simple API interactions,
+where you do not require tranforming the data. These are:
+
+- `useMemoryCache`
+- `useStorageCache`
+
+When transformation is required, two sets of level level caching functions are exposed:
+
+- `createMemoryHandler` and `createMemoryCache` for memory caching
+- `createStorageHandler` and `createStorageCache`
+for persistent caching
+
 ### Memory Cache
 
 Uses Nuxt's built-in payload system to cache data in memory. Ideal for server-side rendered data that doesn't need to persist.
 
 ```ts
-import { useMemoryCache } from 'nuxt-cache'
-
 // Basic usage
 const { data } = await useFetch('/api/products', {
   // other useFetch options
@@ -50,13 +61,39 @@ const { data } = await useLazyFetch('/api/products', {
 })
 ```
 
+When requiring transformation of a response before exposing
+the response through useFetch, you can use the `createMemoryHandler`
+and `createMemoryCache` helpers.
+
+```ts
+type MinimalProduct = Pick<Product, 'id' | 'title' | 'price'>
+const { data, status, error } = await useFetch<MinimalProduct[]>(
+  'https://fakestoreapi.com/products',
+  {
+    transform(input) {
+      const modifiedProducts = input.map(product => ({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+      }))
+      return createMemoryHandler(modifiedProducts)
+    },
+    getCachedData(key, nuxtApp) {
+      return createMemoryCache({
+        key,
+        nuxtApp,
+        duration: 5000,
+      })
+    },
+  },
+)
+```
+
 ### Storage Cache
 
 Uses localStorage to persist cached data between page reloads. Perfect for client-side data that should survive browser refreshes.
 
 ```ts
-import { useStorageCache } from 'nuxt-cache'
-
 // Basic usage
 const { data } = await useFetch('/api/products', {
   ...useStorageCache({ 
@@ -71,23 +108,38 @@ const { data } = await useLazyFetch('/api/products', {
 })
 ```
 
-## Configuration
+When requiring transformation of a response before exposing
+the response through useFetch, you can use the `createStorageHandler`
+and `createStorageCache` helpers.
 
-### Cache Options
-
-#### Memory Cache Options
-
-| Option | Type | Description |
-|---|---|---|
-| `duration` | `number` | Duration in milliseconds before cache expires |
-
-#### Storage Cache Options
-
-| Option | Type | Description |
-|---|---|---|
-| `duration` | `number` | Duration in milliseconds before cache expires |
-| `key` | `string` | Custom key for storage cache (defaults to route path) |
-
+```ts
+type MinimalProduct = Pick<Product, 'id' | 'title' | 'price'>
+const CACHE_KEY = '__storage_cache__/products'
+const { data, status, error } = await useFetch<MinimalProduct[]>(
+  'https://fakestoreapi.com/products',
+  {
+    transform(input) {
+      const modifiedProducts = input.map(product => ({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+      }))
+      return createStorageHandler({
+        storageKey: CACHE_KEY,
+        data: modifiedProducts,
+      })
+    },
+    getCachedData(key, nuxtApp) {
+      return createStorageCache({
+        key,
+        nuxtApp,
+        storageKey: CACHE_KEY,
+        duration: 10000,
+      })
+    },
+  },
+)
+```
 ## How It Works
 
 ### Memory Cache

@@ -25,7 +25,10 @@ const { data, status, error } = await useFetch<MinimalProduct[]>(
         title: product.title,
         price: product.price,
       }))
-      return createStorageHandler(CACHE_KEY, modifiedProducts)
+      return createStorageHandler({
+        storageKey: CACHE_KEY,
+        data: modifiedProducts,
+      })
     },
     getCachedData(key, nuxtApp) {
       return createStorageCache({
