@@ -1,5 +1,11 @@
 import type { UseFetchOptions } from 'nuxt/app'
 
+// Storage structure that keeps array data and metadata separate
+export interface StorageData<T> {
+  data: T
+  fetchedAt: Date
+}
+
 /**
  * Configuration options for cache behaviour
  */

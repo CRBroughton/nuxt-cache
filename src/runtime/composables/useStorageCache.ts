@@ -1,12 +1,6 @@
 import { useStorage } from '@vueuse/core'
-import type { CreateCacheOptions, CacheOptions, TransformInput } from '../types'
+import type { CreateCacheOptions, CacheOptions, TransformInput, StorageData } from '../types'
 import { useRoute, type NuxtApp } from '#app'
-
-// Storage structure that keeps array data and metadata separate
-interface StorageData<T> {
-  data: T
-  fetchedAt: Date
-}
 
 /**
  * Creates a storage handler for caching data
@@ -14,7 +8,7 @@ interface StorageData<T> {
  * @param data - Data to store in cache
  * @returns Storage ref and utility functions for managing cached data
  * @example
- * // useFetch transformc
+ * // useFetch transform
  * transform(input) {
  *   const modifiedProducts = input.map(product => ({
  *     id: product.id,
@@ -35,7 +29,7 @@ export function createStorageHandler<T>(storageKey: string, data: T) {
     storageData,
     undefined,
     { mergeDefaults: true },
-  )
+  ).value.data
 }
 
 /**
@@ -119,7 +113,7 @@ export function useStorageCache<T>(cacheOptions: CreateStorageCacheOptions = { d
 
   return {
     transform(input: TransformInput<T>) {
-      return createStorageHandler(storageKey, input).value.data
+      return createStorageHandler(storageKey, input)
     },
 
     getCachedData(key: string, nuxtApp: NuxtApp) {
