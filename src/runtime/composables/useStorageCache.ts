@@ -13,6 +13,57 @@ interface StorageData<T> {
   data: T
   fetchedAt: Date
 }
+
+/**
+ * Creates a storage handler for caching data
+ * @param storageKey - Storage key for cached data
+ * @param data - Default data to use if no cached data exists
+ * @returns Storage ref and utility functions for managing cached data
+ */
+export function createStorageHandler<T>(storageKey: string, data: T) {
+  const storageData: StorageData<T> = {
+    data,
+    fetchedAt: new Date(),
+  }
+
+  return useStorage<StorageData<T>>(
+    storageKey,
+    storageData,
+    undefined,
+    { mergeDefaults: true },
+  )
+}
+
+/**
+ * Validates and retrieves data from storage cache
+ * @param options - Options object containing storage and duration
+ * @param options.storage - Storage ref containing cached data from createStorageHandler
+ * @param options.duration - Cache duration in milliseconds
+ * @returns Cached data if valid and not expired, undefined if cache miss or expired
+ */
+export function createStorageCache<T>({
+  storage,
+  duration,
+}: {
+  storage: ReturnType<typeof createStorageHandler<T>>
+  duration: number
+}) {
+  if (!storage.value) {
+    return // refetch
+  }
+
+  const expirationDate = new Date(storage.value.fetchedAt)
+  expirationDate.setTime(expirationDate.getTime() + duration)
+  const isExpired = expirationDate.getTime() < Date.now()
+
+  if (isExpired) {
+    storage.value = null
+    return // refetch
+  }
+
+  return storage.value.data
+}
+
 /**
  * Creates cache options with transform and getCachedData functions using VueUse's useStorage
  * @param cacheOptions - Configuration for cache behaviour including duration
@@ -35,19 +86,7 @@ export function useStorageCache<T>(cacheOptions: CreateStorageCacheOptions = { d
 
   return {
     transform(input: TransformInput<T>) {
-      const storageData: StorageData<T> = {
-        data: input,
-        fetchedAt: new Date(),
-      }
-
-      useStorage<StorageData<T>>(
-        storageKey,
-        storageData,
-        undefined,
-        { mergeDefaults: true },
-      )
-
-      return input
+      return createStorageHandler(storageKey, input).value.data
     },
 
     getCachedData(key: string, nuxtApp: NuxtApp) {
@@ -60,20 +99,7 @@ export function useStorageCache<T>(cacheOptions: CreateStorageCacheOptions = { d
         },
       )
 
-      if (!storage.value) {
-        return // refetch
-      }
-
-      const expirationDate = new Date(storage.value.fetchedAt)
-      expirationDate.setTime(expirationDate.getTime() + cacheOptions.duration)
-      const isExpired = expirationDate.getTime() < Date.now()
-
-      if (isExpired) {
-        storage.value = null
-        return // refetch
-      }
-
-      return storage.value.data
+      return createStorageCache({ storage, duration: cacheOptions.duration })
     },
   }
 }
