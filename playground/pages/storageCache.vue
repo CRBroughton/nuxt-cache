@@ -13,10 +13,12 @@ interface Rating {
   rate: number
   count: number
 }
+
+const STORAGE_CACHE_KEY = 'storage'
 const { data, status, error } = await useFetch<Product[]>(
   'https://fakestoreapi.com/products',
   {
-    ...useStorageCache({ duration: 5000 }),
+    ...useStorageCache({ key: STORAGE_CACHE_KEY, duration: 5000 }),
   },
 )
 </script>

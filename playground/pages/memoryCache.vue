@@ -15,10 +15,11 @@ interface Rating {
   rate: number
   count: number
 }
-const { data, status, error } = await useFetch<MemoryCache<Product[]>>(
+const MEMORY_CACHE_KEY = 'memory'
+const { data, status, error } = useLazyFetch<MemoryCache<Product[]>>(
   'https://fakestoreapi.com/products',
   {
-    ...useMemoryCache({ duration: 4000 }),
+    ...useMemoryCache({ key: MEMORY_CACHE_KEY, duration: 10_000 }),
   },
 )
 </script>
@@ -34,11 +35,12 @@ const { data, status, error } = await useFetch<MemoryCache<Product[]>>(
     <!-- Add error state -->
     <div v-else-if="error">
       Error loading products
+      {{ error }}
     </div>
 
     <!-- Only render when we have data -->
     <div v-else-if="data">
-      {{ data.fetchedAt }}
+      {{ data }}
       <div
         v-for="product of data.data"
         :key="product.id"

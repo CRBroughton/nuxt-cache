@@ -13,10 +13,11 @@ interface Rating {
   rate: number
   count: number
 }
-
+const MANUAL_MEMORY_CACHE_KEY = 'manual_memory'
 const { data, status, error } = await useFetch(
   'https://fakestoreapi.com/products',
   {
+    key: MANUAL_MEMORY_CACHE_KEY, // for Memory Links
     transform(input: Product[]) {
       const modifiedProducts = input.map(product => ({
         id: product.id,

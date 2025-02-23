@@ -83,6 +83,7 @@ export function createMemoryCache({
  */
 export function useMemoryCache<T>(cacheOptions: CreateCacheOptions = { duration: 3_600_000 }): CacheOptions<T> {
   return {
+    key: cacheOptions.key,
     transform(input: TransformInput<T>) {
       return createMemoryHandler(input) as T
     },

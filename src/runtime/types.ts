@@ -11,6 +11,11 @@ export interface StorageData<T> {
  */
 export interface CreateCacheOptions {
   /**
+   * Optional key for caching
+   * Use this key if you are using SmartLinks
+   */
+  key?: string
+  /**
    * Duration in milliseconds before cache expires
    * @default 3600000 (1 hour)
    */
@@ -24,4 +29,4 @@ export type TransformInput<T> = NonNullable<UseFetchOptions<T>['transform']> ext
 /**
  * Cache-related options extracted from UseFetchOptions
  */
-export type CacheOptions<T> = Pick<UseFetchOptions<T>, 'transform' | 'getCachedData'>
+export type CacheOptions<T> = Pick<UseFetchOptions<T>, 'key' | 'transform' | 'getCachedData'>

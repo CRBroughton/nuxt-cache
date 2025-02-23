@@ -116,12 +116,11 @@ interface CreateStorageCacheOptions extends CreateCacheOptions {
 export function useStorageCache<T>(cacheOptions: CreateStorageCacheOptions = { duration: 3_600_000 }): CacheOptions<T> {
   const route = useRoute()
   const cacheKey = cacheOptions.key || route.fullPath
-  const storageKey = `__storage_cache__${cacheKey}`
 
   return {
     transform(input: TransformInput<T>) {
       return createStorageHandler({
-        storageKey,
+        storageKey: cacheKey,
         data: input,
       })
     },
@@ -130,7 +129,7 @@ export function useStorageCache<T>(cacheOptions: CreateStorageCacheOptions = { d
       return createStorageCache({
         key,
         nuxtApp,
-        storageKey,
+        storageKey: cacheKey,
         duration: cacheOptions.duration,
       })
     },

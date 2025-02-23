@@ -15,7 +15,7 @@ interface Rating {
 }
 
 type MinimalProduct = Pick<Product, 'id' | 'title' | 'price'>
-const CACHE_KEY = '__storage_cache__/products'
+const MANUAL_STORAGE_CACHE_KEY = 'manual_storage'
 const { data, status, error } = await useFetch<MinimalProduct[]>(
   'https://fakestoreapi.com/products',
   {
@@ -26,7 +26,7 @@ const { data, status, error } = await useFetch<MinimalProduct[]>(
         price: product.price,
       }))
       return createStorageHandler({
-        storageKey: CACHE_KEY,
+        storageKey: MANUAL_STORAGE_CACHE_KEY,
         data: modifiedProducts,
       })
     },
@@ -34,7 +34,7 @@ const { data, status, error } = await useFetch<MinimalProduct[]>(
       return createStorageCache({
         key,
         nuxtApp,
-        storageKey: CACHE_KEY,
+        storageKey: MANUAL_STORAGE_CACHE_KEY,
         duration: 10000,
       })
     },
