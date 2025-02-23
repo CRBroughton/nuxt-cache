@@ -1,5 +1,11 @@
 # @crbroughton/nuxt-cache
 
+## 1.1.0
+
+### Minor Changes
+
+- Fix fetchedAt date being part of the data object, clean up documentation, provide helper type for using in-memory caching
+
 ## 1.0.0
 
 ### Major Changes

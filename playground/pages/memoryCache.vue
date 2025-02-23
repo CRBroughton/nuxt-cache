@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { MemoryCache } from '../../src/runtime/types'
+
 export interface Product {
   id: number
   title: string
@@ -13,7 +15,7 @@ interface Rating {
   rate: number
   count: number
 }
-const { data, status, error } = await useFetch<Product[]>(
+const { data, status, error } = await useFetch<MemoryCache<Product[]>>(
   'https://fakestoreapi.com/products',
   {
     ...useMemoryCache({ duration: 4000 }),
@@ -36,8 +38,9 @@ const { data, status, error } = await useFetch<Product[]>(
 
     <!-- Only render when we have data -->
     <div v-else-if="data">
+      {{ data.fetchedAt }}
       <div
-        v-for="product of data"
+        v-for="product of data.data"
         :key="product.id"
       >
         {{ product }}

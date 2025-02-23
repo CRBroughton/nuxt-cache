@@ -14,11 +14,10 @@ interface Rating {
   count: number
 }
 
-type MinimalProduct = Pick<Product, 'id' | 'title' | 'price'>
-const { data, status, error } = await useFetch<MinimalProduct[]>(
+const { data, status, error } = await useFetch(
   'https://fakestoreapi.com/products',
   {
-    transform(input) {
+    transform(input: Product[]) {
       const modifiedProducts = input.map(product => ({
         id: product.id,
         title: product.title,
@@ -48,12 +47,14 @@ const { data, status, error } = await useFetch<MinimalProduct[]>(
     <!-- Add error state -->
     <div v-else-if="error">
       Error loading products
+      {{ error }}
     </div>
 
     <!-- Only render when we have data -->
     <div v-else-if="data">
+      {{ data.fetchedAt }}
       <div
-        v-for="product of data"
+        v-for="product of data.data"
         :key="product.id"
       >
         {{ product }}

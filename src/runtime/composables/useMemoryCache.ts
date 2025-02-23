@@ -17,7 +17,7 @@ import type { NuxtApp } from '#app'
  */
 export function createMemoryHandler<T>(data: T) {
   return {
-    ...data,
+    data: data,
     fetchedAt: new Date(),
   }
 }
@@ -84,7 +84,7 @@ export function createMemoryCache({
 export function useMemoryCache<T>(cacheOptions: CreateCacheOptions = { duration: 3_600_000 }): CacheOptions<T> {
   return {
     transform(input: TransformInput<T>) {
-      return createMemoryHandler(input)
+      return createMemoryHandler(input) as T
     },
     getCachedData(key: string, nuxtApp: NuxtApp) {
       return createMemoryCache({

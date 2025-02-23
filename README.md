@@ -49,15 +49,19 @@ Uses Nuxt's built-in payload system to cache data in memory. Ideal for server-si
 
 ```ts
 // Basic usage
-const { data } = await useFetch('/api/products', {
+const { data } = await useFetch<MemoryCache<Product[]>>('/api/products', {
+  {
   // other useFetch options
   ...useMemoryCache({ duration: 3600000 }) // Cache for 1 hour
+  }
 })
 
 // With lazy loading
-const { data } = await useLazyFetch('/api/products', {
+const { data } = await useLazyFetch<MemoryCache<Product[]>>('/api/products', {
+  {
   // other useFetch options
   ...useMemoryCache({ duration: 3600000 })
+  }
 })
 ```
 
@@ -66,11 +70,10 @@ the response through useFetch, you can use the `createMemoryHandler`
 and `createMemoryCache` helpers.
 
 ```ts
-type MinimalProduct = Pick<Product, 'id' | 'title' | 'price'>
-const { data, status, error } = await useFetch<MinimalProduct[]>(
+const { data, status, error } = await useFetch(
   'https://fakestoreapi.com/products',
   {
-    transform(input) {
+    transform(input: Product[]) { // Need to manually declare the type here
       const modifiedProducts = input.map(product => ({
         id: product.id,
         title: product.title,
@@ -89,22 +92,42 @@ const { data, status, error } = await useFetch<MinimalProduct[]>(
 )
 ```
 
+#### Caveats of Memory Caching
+
+Because in memory caching has no persistent store, we need to return both the data and
+the `fetchedAt` date back to the user to verify when a cached payload has gone out-of-date.
+
+Because of this, we highly recommend using the `MemoryCache` type as a wrapper around
+your return type when using useFetch. This will ensure when accessing the returned data,
+that you are acting on the correct shape. The interface is as follows:
+
+```ts
+export interface MemoryCache<T> {
+  data: T
+  fetchedAt: Date
+}
+```
+
+The above type is readily available via `@crbroughton/nuxt-cache` and
+has been exported for you to use.
+
 ### Storage Cache
 
-Uses localStorage to persist cached data between page reloads. Perfect for client-side data that should survive browser refreshes.
+Uses localStorage to persist cached data between page reloads. Perfect for client-side data that should survive browser refreshes. Because the storage cache is persisent, we only need to
+return to you your actual data, and no fetchedAt date.
 
 ```ts
 // Basic usage
-const { data } = await useFetch('/api/products', {
-  ...useStorageCache({ 
+const { data } = await useFetch<Product[]>('/api/products', {
+  useStorageCache({ 
     duration: 3600000, // Cache for 1 hour
     key: 'products' // Optional custom key
   })
 })
 
 // With lazy loading
-const { data } = await useLazyFetch('/api/products', {
-  ...useStorageCache({ duration: 3600000 })
+const { data } = await useLazyFetch<Product[]>('/api/products', {
+  useStorageCache({ duration: 3600000 })
 })
 ```
 
