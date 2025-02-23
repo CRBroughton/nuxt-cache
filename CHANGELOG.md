@@ -1,5 +1,11 @@
 # @crbroughton/nuxt-cache
 
+## 1.2.0
+
+### Minor Changes
+
+- 3591f83: create MemoryLink and StorageLink - smart links that prefetch and execute useFetches before navigation
+
 ## 1.1.1
 
 ### Patch Changes
