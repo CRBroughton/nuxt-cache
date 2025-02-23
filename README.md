@@ -7,11 +7,12 @@ A flexible caching solution for Nuxt 3 that provides both in-memory and persiste
 
 - 🧠 `useMemoryCache`: In-memory caching with Nuxt's payload system
 - 💾 `useStorageCache`: Persistent caching using localStorage
+- 🔗 MemoryLink: Auto-prefetching NuxtLink component with in-memory caching
+- 📍 StorageLink: Auto-prefetching NuxtLink componetn with persistent storage caching
 - ⚡️ Zero-config setup with sensible defaults
 - 🎯 Full TypeScript support
 - 🔄 Compatible with `useFetch`, `useLazyFetch`, and custom fetch composables
 - 💪 Built on top of VueUse's useStorage for persistent caching
-
 ## Installation
 
 ```bash
