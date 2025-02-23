@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MemoryCache } from '../../src/runtime/types'
+import type { MemoryCache } from '../../src/module'
 
 export interface Product {
   id: number

@@ -1,6 +1,6 @@
 {
   "name": "@crbroughton/nuxt-cache",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Nuxt Cache Module",
   "author": "Craig R Broughton",
   "license": "MIT",

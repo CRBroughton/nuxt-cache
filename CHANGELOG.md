@@ -1,5 +1,11 @@
 # @crbroughton/nuxt-cache
 
+## 1.1.1
+
+### Patch Changes
+
+- move MemoryCache type to module.ts for exporting
+
 ## 1.1.0
 
 ### Minor Changes

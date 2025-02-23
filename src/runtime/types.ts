@@ -7,28 +7,6 @@ export interface StorageData<T> {
 }
 
 /**
- * Defines the structure for cached API responses when using memory caching with useFetch.
- * Used to track both the fetched data and when it was last retrieved.
- * This type should always be used when using memory caching with useMemoryCache
- *
- * @template T The type of data being stored (e.g., Product[], User, etc.)
- * @property {T} data The actual data retrieved from the API
- * @property {Date} fetchedAt Timestamp when the data was fetched, used for cache invalidation
- *
- * @example
- * const { data } = await useFetch<MemoryCache<Product[]>>(
- *   'https://api.example.com/products',
- *   {
- *     ...useMemoryCache({ duration: 4000 })
- *   }
- * )
- */
-export interface MemoryCache<T> {
-  data: T
-  fetchedAt: Date
-}
-
-/**
  * Configuration options for cache behaviour
  */
 export interface CreateCacheOptions {
