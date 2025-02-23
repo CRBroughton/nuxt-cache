@@ -163,6 +163,73 @@ const { data, status, error } = await useFetch<MinimalProduct[]>(
   },
 )
 ```
+### Smart Link Components
+
+You may also wish to fetch data before the user has ever navigated to a page;
+The package provides two smart link components that automatically prefetch API data when users hover or interact with links, optimizing the navigation experience:
+
+#### MemoryLink (Memory Cache)
+
+Extends NuxtLink to prefetch and cache API data in memory:
+
+```html
+<MemoryLink 
+  to="/products"
+  url="https://api.example.com/products"
+  cacheKey="products-list"
+  :cacheDuration="5000"
+>
+  View Products
+</MemoryLink>
+```
+
+Then in your target page:
+```ts
+const { data } = await useFetch<MemoryCache<Product[]>>(
+  'https://api.example.com/products',
+  {
+    ...useMemoryCache({ duration: 5000 }),
+    key: 'products-list' // Match the cacheKey from SmartLink
+  }
+)
+```
+
+#### StorageLink (Persistent Cache)
+
+Similar to MemoryLink but with persistent storage using localStorage:
+
+```html
+<StorageLink 
+  to="/products"
+  url="https://api.example.com/products"
+  cacheKey="products-list"
+  :cacheDuration="5000"
+>
+  View Products
+</StorageLink>
+```
+
+Then in your target page:
+
+```ts
+const { data } = await useFetch<Product[]>(
+  'https://api.example.com/products',
+  {
+    ...useStorageCache({ 
+      duration: 5000,
+      key: 'products-list' // Match the cacheKey from SmartStorageLink
+    })
+  }
+)
+```
+
+Both components:
+- Prefetch data on hover
+- Cache the response for the specified duration
+- Prevent duplicate API calls when navigating
+- Check cache validity before making new requests
+- Handle loading states to prevent multiple simultaneous requests
+
 ## How It Works
 
 ### Memory Cache

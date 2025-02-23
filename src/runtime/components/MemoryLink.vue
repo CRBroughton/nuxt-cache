@@ -12,7 +12,7 @@ interface SmartLinkProps extends NuxtLinkProps {
 
   /**
    * API endpoint URL to prefetch data from
-   * Should match the URL used in useFetch on the target page
+   * should match the URL used in useFetch on the target page
    */
   url: string
 
