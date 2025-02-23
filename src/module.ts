@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'node:url'
-import { defineNuxtModule, createResolver, installModule } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, installModule, addComponentsDir } from '@nuxt/kit'
 
 /**
  * Defines the structure for cached API responses when using memory caching with useFetch.
@@ -39,6 +39,10 @@ export default defineNuxtModule({
 
     nuxt.hook('imports:dirs', (dirs) => {
       dirs.push(resolve(runtimeDir, 'composables'))
+    })
+
+    addComponentsDir({
+      path: resolve('runtime/components'),
     })
   },
 })
