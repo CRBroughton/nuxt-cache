@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { SmartLinks } from '~/app.vue'
+
 export interface Product {
   id: number
   title: string
@@ -13,11 +15,11 @@ interface Rating {
   rate: number
   count: number
 }
-const MANUAL_MEMORY_CACHE_KEY = 'manual_memory'
+const { getCacheKey } = useSmartLinks<SmartLinks>()
 const { data, status, error } = await useFetch(
   'https://fakestoreapi.com/products',
   {
-    key: MANUAL_MEMORY_CACHE_KEY, // for Memory Links
+    key: getCacheKey('manual_memory'), // for Memory Links
     transform(input: Product[]) {
       const modifiedProducts = input.map(product => ({
         id: product.id,

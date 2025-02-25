@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { SmartLinks } from '~/app.vue'
+
 export interface Product {
   id: number
   title: string
@@ -14,11 +16,11 @@ interface Rating {
   count: number
 }
 
-const STORAGE_CACHE_KEY = 'storage'
+const { getCacheKey } = useSmartLinks<SmartLinks>()
 const { data, status, error } = await useFetch<Product[]>(
   'https://fakestoreapi.com/products',
   {
-    ...useStorageCache({ key: STORAGE_CACHE_KEY, duration: 5000 }),
+    ...useStorageCache({ key: getCacheKey('storage'), duration: 5000 }),
   },
 )
 </script>

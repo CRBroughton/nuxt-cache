@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { SmartLinks } from '~/app.vue'
+
 export interface Product {
   id: number
   title: string
@@ -15,7 +17,7 @@ interface Rating {
 }
 
 type MinimalProduct = Pick<Product, 'id' | 'title' | 'price'>
-const MANUAL_STORAGE_CACHE_KEY = 'manual_storage'
+const { getCacheKey } = useSmartLinks<SmartLinks>()
 const { data, status, error } = await useFetch<MinimalProduct[]>(
   'https://fakestoreapi.com/products',
   {
@@ -26,7 +28,7 @@ const { data, status, error } = await useFetch<MinimalProduct[]>(
         price: product.price,
       }))
       return createStorageHandler({
-        storageKey: MANUAL_STORAGE_CACHE_KEY,
+        storageKey: getCacheKey('manual_storage'),
         data: modifiedProducts,
       })
     },
@@ -34,7 +36,7 @@ const { data, status, error } = await useFetch<MinimalProduct[]>(
       return createStorageCache({
         key,
         nuxtApp,
-        storageKey: MANUAL_STORAGE_CACHE_KEY,
+        storageKey: getCacheKey('manual_storage'),
         duration: 10000,
       })
     },
