@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { MemoryCache } from '../../src/module'
+import type { SmartLinks } from '~/app.vue'
 
 export interface Product {
   id: number
@@ -15,11 +16,11 @@ interface Rating {
   rate: number
   count: number
 }
-const MEMORY_CACHE_KEY = 'memory'
+const { getCacheKey } = useSmartLinks<SmartLinks>()
 const { data, status, error } = useLazyFetch<MemoryCache<Product[]>>(
   'https://fakestoreapi.com/products',
   {
-    ...useMemoryCache({ key: MEMORY_CACHE_KEY, duration: 10_000 }),
+    ...useMemoryCache({ key: getCacheKey('memory'), duration: 10_000 }),
   },
 )
 </script>
