@@ -8,11 +8,13 @@ A flexible caching solution for Nuxt 3 that provides both in-memory and persiste
 - 🧠 `useMemoryCache`: In-memory caching with Nuxt's payload system
 - 💾 `useStorageCache`: Persistent caching using localStorage
 - 🔗 MemoryLink: Auto-prefetching NuxtLink component with in-memory caching
-- 📍 StorageLink: Auto-prefetching NuxtLink componetn with persistent storage caching
+- 📍 StorageLink: Auto-prefetching NuxtLink component with persistent storage caching
+- 🧩 `useSmartLinks`: Centralised management of URL and cache settings for SmartLinks
 - ⚡️ Zero-config setup with sensible defaults
 - 🎯 Full TypeScript support
 - 🔄 Compatible with `useFetch`, `useLazyFetch`, and custom fetch composables
 - 💪 Built on top of VueUse's useStorage for persistent caching
+
 ## Installation
 
 ```bash
@@ -231,6 +233,92 @@ Both components:
 - Check cache validity before making new requests
 - Handle loading states to prevent multiple simultaneous requests
 
+
+### Smart Links Management
+
+The `defineSmartLinks` helper provides a centralised way to manage URLs and cache settings for your application's smart links. This helper exposes `provideSmartLinks` and `useSmartLinks` for easy access
+to your smart links.
+
+#### Setting up SmartLinks
+
+First, provide your smart links in a parent component:
+
+```ts
+import { provideSmartLinks } from '@crbroughton/nuxt-cache'
+
+// In your parent component
+provideSmartLinks({
+  products: {
+    url: 'https://api.example.com/products',
+    cacheKey: 'products-cache',
+    cacheDuration: 5000 // 5 seconds
+  },
+  settings: {
+    url: 'https://api.example.com/settings',
+    cacheKey: 'settings-cache',
+    cacheDuration: 3600000 // 1 hour
+  }
+})
+```
+
+#### Using SmartLinks in components
+
+Then use these smart links throughout your application:
+
+```ts
+import { useSmartLinks } from '@crbroughton/nuxt-cache'
+
+// In any component
+const { getSmartLink } = useSmartLinks<typeof smartLinks>() // provide the type of your smartlinks
+
+// Get properties for a specific smart link
+const productsLink = getSmartLink('products')
+console.log(productsLink.url) // https://api.example.com/products
+console.log(productsLink.cacheDuration) // 5000
+
+// Get just the cache key for use with MemoryLink or StorageLink
+const productsCacheKey = smartLinks.getCacheKey('products') // 'products'
+
+// Get just the URL for a fetch call
+const productsUrl = smartLinks.getCacheUrl('products') // 'https://api.example.com/products'
+```
+
+#### Using with SmartLink components
+
+SmartLinks pairs perfectly with the MemoryLink and StorageLink components:
+
+```html
+<template>
+  <div>
+    <!-- Using the built in helpers that provideSmartLink exports -->
+    <MemoryLink 
+      to="/products"
+      :url="getCacheUrl('products')"
+      :cacheKey="getCacheKey('products')"
+      :cacheDuration="getSmartLink('products').cacheDuration"
+    >
+      View Products
+    </MemoryLink>
+    <!-- Using v-bind-->
+    <MemoryLink 
+      to="/products"
+      v-bind="getSmartLink('products')"
+    >
+      View Products
+    </MemoryLink>
+  </div>
+</template>
+
+<script setup>
+import { useSmartLinks } from '@crbroughton/nuxt-cache'
+
+const { getCacheUrl, getCacheKey, getSmartLink } = useSmartLinks()
+</script>
+```
+
+This approach provides type-safe access to your API endpoints and cache settings, making it easier to maintain consistent caching behaviour across your application.
+
+
 ## How It Works
 
 ### Memory Cache
@@ -243,6 +331,12 @@ Both components:
 - Data persists between page reloads
 - Automatically handles JSON serialization/deserialization
 - Includes timestamp checking for cache invalidation
+
+### SmartLinks
+- Provides a centralized store for managing API endpoints and cache settings
+- Type-safe access to URLs and cache configuration
+- Simplifies the use of MemoryLink and StorageLink components
+- Helps maintain consistent caching behavior across your application
 
 ## Contributing
 
