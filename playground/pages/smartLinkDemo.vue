@@ -1,12 +1,14 @@
 <script setup lang="ts">
-const { getSmartLink } = useSmartLinks()
+import type { SmartLinks } from '~/app.vue'
+
+const { getSmartLink } = useSmartLinks<SmartLinks>()
 </script>
 
 <template>
   <div class="container">
     <MemoryLink
       to="/memoryCache"
-      v-bind="getSmartLink('')"
+      v-bind="getSmartLink('memory')"
     >
       Smart Link - Memory
     </MemoryLink>
