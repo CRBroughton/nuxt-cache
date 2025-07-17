@@ -61,7 +61,25 @@ export function useFetchMemoryCache(fetcher: typeof $fetch = $fetch) {
   }
 
   /**
-   * Cached fetch function that uses memory caching
+   * Cache fetch function that uses memory caching to avoid redundant network requests.
+   * When cached data is available and not expired, it returns the cached data immediately
+   * without making any network request. Only fetches from the network when cache is
+   * missing, expired, or force refresh is requested.
+   * @param url - The URL to fetch data from
+   * @param options - Same as $fetch options plus duration, key, and force for caching
+   * @param options.duration - Cache duration in milliseconds (default: 1 hour)
+   * @param options.key - Cache key for storing/retrieving data (default: url)
+   * @param options.force - Force refresh ignoring cache (default: false)
+   * @returns Promise that resolves to the fetched and cached data
+   * @example
+   * ```ts
+   * const products = await cachedFetch('/api/products', {
+   *   key: 'products-list',
+   *   duration: 300000, // 5 minutes
+   *   method: 'POST',
+   *   headers: { 'Authorization': 'Bearer token' }
+   * })
+   * ```
    */
   async function cachedFetch<T>(
     url: string,
