@@ -1,8 +1,25 @@
 import { useState } from '#app'
 
+/**
+ * Configuration options for memory caching behavior in cachedFetch
+ */
 interface FetchMemoryCacheOptions {
+  /**
+   * Cache duration in milliseconds before data expires and requires refetch
+   * @default 3600000 (1 hour)
+   */
   duration?: number
+
+  /**
+   * Unique cache key for storing/retrieving data. Used to identify cached entries.
+   * @default url (the fetch URL)
+   */
   key?: string
+
+  /**
+   * Force refresh by skipping cache lookup and always fetching fresh data
+   * @default false
+   */
   force?: boolean
 }
 
