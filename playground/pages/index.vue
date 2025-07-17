@@ -15,6 +15,9 @@
     <NuxtLink to="/smartLinkDemo">
       Smart Link Demo
     </NuxtLink>
+    <NuxtLink to="/fetchMemoryCache">
+      Fetch Memory Cache Demo
+    </NuxtLink>
   </div>
 </template>
 
