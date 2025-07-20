@@ -1,5 +1,12 @@
 # @crbroughton/nuxt-cache
 
+## 1.3.0
+
+### Minor Changes
+
+- 733a8e5: create defineSmartLink - Helper to create smart link stores with provide/inject
+- 9bee593: create useFetchMemoryCache
+
 ## 1.2.0
 
 ### Minor Changes
