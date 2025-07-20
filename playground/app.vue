@@ -21,6 +21,7 @@ const smartLinks = {
   },
 }
 provideSmartLinks(smartLinks)
+provideFetchMemoryCache($fetch)
 </script>
 
 <template>

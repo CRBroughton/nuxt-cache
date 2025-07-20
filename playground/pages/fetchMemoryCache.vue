@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Product } from './manualMemoryCache.vue'
 
-const { cachedFetch,
-} = useFetchMemoryCache($fetch)
+const { getCacheKeys, cachedFetch, clearCacheKey } = useFetchMemoryCache()
 
 const FIVE_SECONDS = 5000
 const products = ref<Product[]>([])
@@ -14,12 +13,28 @@ const fetchProducts = async () => {
   })
   products.value = response
 }
+
+onMounted(() => {
+  fetchProducts()
+})
+
+const tryToClearCache = () => {
+  clearCacheKey('products-list')
+}
+
+const currentCacheKeys = getCacheKeys()
 </script>
 
 <template>
   <div>
+    <div>
+      {{ currentCacheKeys }}
+    </div>
     <button @click="fetchProducts">
       Fetch products
+    </button>
+    <button @click="tryToClearCache">
+      CLEAR
     </button>
     <div v-if="products">
       <div
