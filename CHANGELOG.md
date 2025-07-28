@@ -1,5 +1,11 @@
 # @crbroughton/nuxt-cache
 
+## 1.3.1
+
+### Patch Changes
+
+- bump version to nuxt 4
+
 ## 1.3.0
 
 ### Minor Changes

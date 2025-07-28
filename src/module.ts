@@ -27,9 +27,6 @@ export default defineNuxtModule({
   meta: {
     name: 'nuxt-cache',
     configKey: 'nuxtCache',
-    compatibility: {
-      nuxt: '^3.0.0',
-    },
   },
   async setup(options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
